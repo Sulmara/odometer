@@ -124,7 +124,6 @@ def worker(logger, db, nav_q, time_q):
             else:
                 pass
         except KeyboardInterrupt:
-            print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
             time_q.put(None)
             kill_q.put(None)
             logger.critical("ctrl+c exitting program")
