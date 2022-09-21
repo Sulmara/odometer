@@ -189,7 +189,6 @@ def main() -> None:
             else:
                 pass
         except KeyboardInterrupt:
-            print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
             time_q.put(None)
             kill_q.put(None)
             logger.critical("ctrl+c exitting program")
@@ -212,4 +211,4 @@ def main() -> None:
 if __name__ == "__main__":
     main()
 
-    #TODO keyboard shortcut not working as need to move worker on to main thread
+    #TODO output odom every minute
