@@ -12,5 +12,11 @@
         "database":"ras",
         "user":"root",
         "password":""
+    },
+    "debug_level": "debug",
+    "log_length": {
+    "hour": 0,
+    "minute": 0,
+    "second": 20
     }
 }
