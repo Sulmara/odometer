@@ -1,0 +1,16 @@
+{
+    "input":{
+        "ip":"localhost",
+        "port":20000
+    },
+    "roc":{
+        "ip":"localhost",
+        "port":20001
+    },
+    "database":{
+        "host":"localhost",
+        "database":"ras",
+        "user":"root",
+        "password":""
+    }
+}

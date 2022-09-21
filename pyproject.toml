@@ -7,6 +7,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+mysql = "^0.0.3"
+mypy = "^0.971"
+mysql-connector-python = "^8.0.30"
 
 
 [build-system]
