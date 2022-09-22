@@ -6,4 +6,4 @@ input:
 
 output:
 - write to database (stored locacally)
-- TODO: output via udp to ROC every 15min.
+- send output via udp to ROC

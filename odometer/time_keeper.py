@@ -42,6 +42,15 @@ def monitor_time(
                 logger = logger
                 time.sleep(0.05)
 
+def get_output_interval(settings: Dict) -> timedelta:
+    output_interval = settings["output_interval"]
+    output_interval = timedelta(
+        hours=int(output_interval["hour"]),
+        minutes=int(output_interval["minute"]),
+        seconds=int(output_interval["second"]),
+    )
+    return output_interval
+
 
 if __name__ == "__main__":
     import read_config

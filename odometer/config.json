@@ -16,7 +16,13 @@
     "debug_level": "debug",
     "log_length": {
     "hour": 0,
-    "minute": 0,
-    "second": 20
+    "minute": 1,
+    "second": 0
+    },
+    "output_interval": {
+        "hour": 0,
+        "minute": 0,
+        "second": 5
     }
+
 }

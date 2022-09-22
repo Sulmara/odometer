@@ -6,6 +6,7 @@ import time
 import threading
 import json
 import math
+from datetime import datetime as dt, timedelta
 
 # third-party libraries
 import mysql.connector
@@ -17,6 +18,7 @@ import time_keeper
 
 # variables
 CONFIG = "config.json"
+
 
 def read_config_file(filepath:str) -> Dict:
     with open(filepath, "r") as f:
@@ -105,30 +107,18 @@ def get_data_from_nav(logger, config, nav_q, kill_q) -> None:
             nav_q.put(position)
             logger.info(position)
             time.sleep(0.5)
-        
-        
-def worker(logger, db, nav_q, time_q):
+            
+def send_to_roc(logger, config:Dict, msg, output_interval, last_output_time) -> None:
+    current_time = dt.now()
+    if current_time - last_output_time > output_interval:
+        last_output_time = current_time
+        logger.debug("new_odom sent to ROC") 
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.sendto(f"current odometer: {msg:.2f}m".encode(), (config["roc"]["ip"], config["roc"]["port"]))
+        return last_output_time
     
-    while True:
-        try:
-            last_position = get_from_database(logger, db)
-            position = nav_q.get()
-            insert_into_database(logger, db, position)
-            logger.info(f"position inserted into database {position}")
-            if last_position != None:
-                distance = calc_dist_between_points(last_position, position)
-                logger.info(f"distance calculated as {distance}")
-                insert_depth_into_database(logger, db, distance)
-                new_odom = calc_new_odom(logger, db, distance)
-                insert_new_odom(logger, db, new_odom)
-            else:
-                pass
-        except KeyboardInterrupt:
-            time_q.put(None)
-            kill_q.put(None)
-            logger.critical("ctrl+c exitting program")
-            break        
-        
+    else:
+        return last_output_time
         
 def calc_dist_between_points(old:Tuple, new:Tuple) -> float:
         delta_e = new[0] - old[0]
@@ -162,18 +152,9 @@ def main() -> None:
         target=get_data_from_nav, 
         args=(logger, config, nav_q, kill_q))
     nav_monitor.start()
-    
-    # create a listening thread for commands from ROC
-    
-    # # create a worker thread for processing and communication with database
-    # thr_worker = threading.Thread(
-    #     name="worker",
-    #     target=worker, 
-    #     args=(logger, db, nav_q, time_q))
-    
-    # # create a sender thread for sending results to ROC
-    # thr_worker.start()
-    
+
+    output_interval = time_keeper.get_output_interval(config)
+    last_output_time = dt.now()
     while True:
         try:
             last_position = get_from_database(logger, db)
@@ -186,8 +167,9 @@ def main() -> None:
                 insert_depth_into_database(logger, db, distance)
                 new_odom = calc_new_odom(logger, db, distance)
                 insert_new_odom(logger, db, new_odom)
+                last_output_time = send_to_roc(logger, config, new_odom, output_interval, last_output_time)
             else:
-                pass
+                last_output_time = last_output_time
         except KeyboardInterrupt:
             time_q.put(None)
             kill_q.put(None)
