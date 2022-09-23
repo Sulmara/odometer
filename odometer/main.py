@@ -209,10 +209,7 @@ def main() -> None:
 
     time_monitor.join()
     nav_monitor.join()
-    # thr_worker.join()
 
 
 if __name__ == "__main__":
     main()
-
-    # TODO output odom every minute
