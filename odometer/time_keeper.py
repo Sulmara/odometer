@@ -53,7 +53,7 @@ def get_output_interval(settings: Dict) -> timedelta:
 
 
 if __name__ == "__main__":
-    import read_config
+    import read_config # type: ignore
 
     q: queue.SimpleQueue = queue.SimpleQueue()
     # decision_maker_send_ss_q = 5
